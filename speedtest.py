@@ -1,13 +1,20 @@
 import subprocess,re,time, os, sys, csv, datetime
 
-interval=5
-
+interval=1
 count=0
 result_file='results.csv'
 
+executable = ''
+if os.name == 'nt':
+    executable = 'speedtext.exe'
+else:
+    executable = './speedtest'
+
+
 def test():
     start_time = datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-    raw=str(subprocess.check_output('speedtest.exe --accept-gdpr -p no'.split()))
+    cmd = executable + ' --accept-license --accept-gdpr -p no'
+    raw=str(subprocess.check_output(cmd.split()))
     download_speed=float(re.findall("Download:(.*?)Mbps",raw)[0].strip())
     upload_speed=float(re.findall("Upload:(.*?)Mbps",raw)[0].strip())
     latency=float(re.findall("Latency:(.*?)ms",raw)[0].strip())
@@ -32,5 +39,5 @@ while True:
                 time.sleep(1)
             except Exception as e : #error
                 print(e)
-                time = datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-                write_result([0,0,0,time,time])
+                t = datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+                write_result([0,0,0,t,t,str(e)])
