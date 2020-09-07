@@ -6,7 +6,7 @@ result_file='results.csv'
 
 executable = ''
 if os.name == 'nt':
-    executable = 'speedtext.exe'
+    executable = 'speedtest.exe'
 else:
     executable = './speedtest'
 
