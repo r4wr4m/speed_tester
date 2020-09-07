@@ -7,7 +7,9 @@
 ## Usage
 
 Make some tests (results are saved to results.csv):
+
 ```python speedtest.py```
 
 Draw plot:
+
 ```python drawplot.py```
