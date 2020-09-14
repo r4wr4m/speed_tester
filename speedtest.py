@@ -41,4 +41,4 @@ while True:
                 print(e)
                 t = datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')
                 write_result([0,0,0,t,t,str(e)])
-time.sleep(1)
+    time.sleep(1)
