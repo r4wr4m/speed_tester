@@ -17,8 +17,6 @@ start_time_str=[]
 stop_time=[]
 test_duration=[]
 
-vertical_lines=[]
-
 with open(result_file) as f:
     reader = csv.reader(f)
     for row in reader:
