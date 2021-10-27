@@ -3,8 +3,11 @@ import csv,datetime
 
 result_file='results.csv'
 
-expected_download_speed = 90.0 #[Mbps]
-expected_upload_speed = 90.0 #[Mbps]
+expected_speeds= [ #[Mbps]
+    [50,"Expected download speed [Mbps]"],
+    [30,"Expected download speed [Mbps]"],
+    [1,"Expected upload speed [Mbps]"]
+    ] 
 
 download=[]
 upload=[]
@@ -14,24 +17,35 @@ start_time_str=[]
 stop_time=[]
 test_duration=[]
 
+vertical_lines=[]
+
 with open(result_file) as f:
     reader = csv.reader(f)
     for row in reader:
-        download.append(float(row[0]))
-        upload.append(float(row[1]))
-        latency.append(float(row[2]))
-        start_time.append(datetime.datetime.strptime(row[3], '%d-%m-%Y %H:%M:%S'))
-        start_time_str.append(datetime.datetime.strptime(row[3], '%d-%m-%Y %H:%M:%S').strftime('%Y%m%d_%H:%M:%S'))
+        if row[0][:3]!='---':
+            download.append(float(row[0]))
+            upload.append(float(row[1]))
+            latency.append(float(row[2]))
+            start_time.append(datetime.datetime.strptime(row[3], '%d-%m-%Y %H:%M:%S'))
+            start_time_str.append(datetime.datetime.strptime(row[3], '%d-%m-%Y %H:%M:%S').strftime('%Y%m%d_%H:%M:%S'))
 
-        stop_time.append(datetime.datetime.strptime(row[4], '%d-%m-%Y %H:%M:%S'))
-        test_duration.append((stop_time[-1] - start_time[-1]).total_seconds())
-
+            stop_time.append(datetime.datetime.strptime(row[4], '%d-%m-%Y %H:%M:%S'))
+            test_duration.append((stop_time[-1] - start_time[-1]).total_seconds())
+        else:
+            #Drawing vertical separators (---comment in results file)
+            x=len(download)
+            plt.axvline(x,linestyle='dotted',color="red")
+            plt.text(x+1,expected_speeds[0][0]/4*3,row[0][3:],color="red",rotation=90)
+            
 plt.plot(start_time_str, download, label="Download [Mbps]")
 plt.plot(start_time_str, upload, label="Upload [Mbps]")
-plt.plot(start_time_str, [expected_download_speed]*len(download), label="Expected download speed [Mbps]",linestyle='dashed')
-plt.plot(start_time_str, [expected_upload_speed]*len(download), label="Expected upload speed [Mbps]",linestyle='dashed')
-plt.bar(start_time_str, test_duration, label="Test duration [s]")
-plt.bar(start_time_str, latency, label="Latency [ms]")
+
+for expected_speed in expected_speeds: #Drawing expected speeds
+    plt.plot(start_time_str, [expected_speed[0]]*len(download), label=expected_speed[1],linestyle='dashed')
+
+#Latency, test duration
+#plt.bar(start_time_str, test_duration, label="Test duration [s]")
+#plt.bar(start_time_str, latency, label="Latency [ms]")
 
 plt.xlabel('Time')
 plt.xticks(rotation=45)
