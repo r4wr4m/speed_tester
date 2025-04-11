@@ -32,10 +32,10 @@ while True:
     second = int(time.strftime('%S',t))
     if minute%interval == 0:
         if second == 0:
+            count+=1
             try:
                 print("Tests: ",count)
                 write_result(test())
-                count+=1
                 time.sleep(1)
             except Exception as e : #error
                 print(e)
