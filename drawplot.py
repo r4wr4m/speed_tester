@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
-import csv,datetime
+import csv,datetime,math
 
 result_file='results.csv'
 
 expected_speeds= [ #[Mbps]
-    [50,"Expected download speed [Mbps]"],
-    [30,"Expected download speed [Mbps]"],
-    [1,"Expected upload speed [Mbps]"]
+    #[50,"Expected download speed [Mbps]"],
+    #[30,"Expected download speed [Mbps]"],
+    #[1,"Expected upload speed [Mbps]"]
     ] 
 
 download=[]
@@ -40,16 +40,23 @@ with open(result_file) as f:
             test_duration.append((stop_time[-1] - start_time[-1]).total_seconds())
         else:
             #Drawing vertical separators (---comment in results file)
-            x=len(download)
-            plt.axvline(x,linestyle='dotted',color="red")
-            plt.text(x+1,expected_speeds[0][0]/4*3,row[0][3:],color="red",rotation=90)
-            
+            comment=row[0][3:]
             #Calculating average
-            if len(download)>0:
+            if len(download)>0: # commment in the middle
                 average_down = calculate_avg(download,average_down)
                 average_up = calculate_avg(upload,average_up)
+                print('(Down: {}, Up:{})'.format(math.floor(average_down[-1]),math.floor(average_up[-1])))
+            
+            #Write comment on the plot
+            print(comment,end=' ')
+            x=len(download)
+            plt.axvline(x,linestyle='dotted',color="red")
+            plt.text(x+1,1,comment,color="red",rotation=90)
+            
+# Calculating last average
 average_down = calculate_avg(download,average_down)
 average_up = calculate_avg(upload,average_up)
+print('(Down: {}, Up:{})'.format(math.floor(average_down[-1]),math.floor(average_up[-1])))
 
 plt.plot(start_time_str, download, label="Download [Mbps]")
 plt.plot(start_time_str, upload, label="Upload [Mbps]")
